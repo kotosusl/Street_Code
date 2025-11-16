@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from .db_session import SqlAlchemyBase
+from sqlalchemy import orm
 
 
 class Account(SqlAlchemyBase):
@@ -13,4 +14,6 @@ class Account(SqlAlchemyBase):
     count_game = sa.Column(sa.Integer, default=0)
     count_winner = sa.Column(sa.Integer, default=0)
     total_score = sa.Column(sa.Integer, default=0)
-    favorite_genre = sa.Column(sa.String)
+    favorite_genre = sa.Column(sa.String(50), sa.ForeignKey('genres.id'))
+
+    genres = orm.relationship('Genres')

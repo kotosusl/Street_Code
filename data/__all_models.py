@@ -6,3 +6,4 @@ from . import team_account
 from . import game_session
 from . import player_answer
 from . import registration
+from . import genres

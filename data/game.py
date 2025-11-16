@@ -16,9 +16,10 @@ class Game(SqlAlchemyBase):
     duration = sa.Column(sa.Integer)
     max_members = sa.Column(sa.Integer)
     mode = sa.Column(sa.String(20))
-    genre = sa.Column(sa.String(20))
+    genre = sa.Column(sa.String(50), sa.ForeignKey('genres.id'))
     is_active = sa.Column(sa.Boolean, default=True)
     start_datetime = sa.Column(sa.DateTime)
     end_datetime = sa.Column(sa.DateTime)
 
     account = orm.relationship("Account")
+    genres = orm.relationship('Genres')
