@@ -7,3 +7,4 @@ from . import game_session
 from . import player_answer
 from . import registration
 from . import genres
+from . import locations

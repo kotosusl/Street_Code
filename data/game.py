@@ -11,7 +11,7 @@ class Game(SqlAlchemyBase):
     description = sa.Column(sa.String(500))
     organizer_id = sa.Column(sa.String(36), sa.ForeignKey('account.id'))
     avatar = sa.Column(sa.BLOB)
-    location = sa.Column(sa.String(50))
+    location = sa.Column(sa.String(36), sa.ForeignKey('locations.id'))
     difficulty = sa.Column(sa.String(30), default="Не указано")
     duration = sa.Column(sa.Integer)
     max_members = sa.Column(sa.Integer)
@@ -23,3 +23,4 @@ class Game(SqlAlchemyBase):
 
     account = orm.relationship("Account")
     genres = orm.relationship('Genres')
+    locate = orm.relationship('Locations')
