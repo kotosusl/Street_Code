@@ -1,4 +1,6 @@
 from flask import Flask
+
+from check_player_answer import blueprint_check_player_answer
 from data import db_session
 from flask_sqlalchemy import SQLAlchemy
 from get_quests_filters import blueprint_get_quests_filters
@@ -9,6 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/street_code_database
 db = SQLAlchemy(app)
 app.register_blueprint(blueprint_get_quests_filters)
 app.register_blueprint(blueprint_post_registration)
+app.register_blueprint(blueprint_check_player_answer)
 
 
 @app.route("/")
