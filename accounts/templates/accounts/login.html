@@ -1,0 +1,33 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="logo">Код Улиц</div>
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <label for="id_username" class="form-label">Email или имя пользователя</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+            <div class="text-danger small">{{ form.username.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label for="id_password" class="form-label">Пароль</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+            <div class="text-danger small">{{ form.password.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Войти</button>
+    
+    <div class="auth-links">
+        <a href="{% url 'accounts:forgot_password' %}" class="text-decoration-none">Забыли пароль?</a>
+        <div class="mt-2">
+            Нет аккаунта? <a href="{% url 'accounts:register_choice' %}" class="text-decoration-none">Зарегистрироваться</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
