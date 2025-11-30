@@ -3,6 +3,8 @@ from flask import Flask
 from check_player_answer import blueprint_check_player_answer
 from data import db_session
 from flask_sqlalchemy import SQLAlchemy
+
+from get_one_game import blueprint_get_one_game
 from get_quests_filters import blueprint_get_quests_filters
 from post_registration import blueprint_post_registration
 from start_game import blueprint_start_game
@@ -14,6 +16,7 @@ app.register_blueprint(blueprint_get_quests_filters)
 app.register_blueprint(blueprint_post_registration)
 app.register_blueprint(blueprint_check_player_answer)
 app.register_blueprint(blueprint_start_game)
+app.register_blueprint(blueprint_get_one_game)
 
 
 @app.route("/")

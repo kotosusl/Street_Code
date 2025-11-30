@@ -56,7 +56,7 @@ def get_quests_filters():
     response = {
         'searching_quests': [
             {
-                'id': p[0].id,
+                'game_id': p[0].id,
                 'title': p[0].title,
                 'description': p[0].description,
                 'organizer': db_sess.execute(
