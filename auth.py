@@ -1,16 +1,25 @@
 from flask import Blueprint, request, jsonify, current_app, g
-from models import db, User
+from sqlalchemy import select
+from uuid import uuid4
+
+from sqlalchemy.testing import db_spec
+
+from data.account import Account
+from data.db_session import create_session
 from utils import token_required, error_response
 import re
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
+
 def validate_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
+
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    db_sess = create_session()
     try:
         data = request.get_json()
         
@@ -39,20 +48,22 @@ def register():
             return error_response('Имя должно быть от 2 до 80 символов', 'invalid_name', 400)
         
         # Проверка существования пользователя
-        if User.query.filter_by(email=email).first():
+
+        if db_sess.execute(select(Account).select_from(Account).where(Account.email == email)).first():
             return error_response('Пользователь уже существует', 'user_exists', 409)
         
         # Создание пользователя
-        user = User(email=email, name=name)
+        user = Account(email=email, username=name, id=str(uuid4()))
         user.set_password(password)
-        
-        db.session.add(user)
-        db.session.commit()
+
+        db_sess.add(user)
+        db_sess.commit()
         
         # Генерация токенов
         access_token = user.generate_auth_token()
         refresh_token = user.generate_refresh_token()
-        
+
+        db_sess.close()
         return jsonify({
             'success': True,
             'message': 'Регистрация успешна',
@@ -67,10 +78,13 @@ def register():
         }), 201
         
     except Exception as e:
+        db_sess.close()
         return error_response(f'Ошибка сервера: {str(e)}', 'server_error', 500)
+
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
+    db_sess = create_session()
     try:
         data = request.get_json()
         
@@ -83,23 +97,23 @@ def login():
         if not email or not password:
             return error_response('Email и пароль обязательны', 'missing_credentials', 400)
         
-        user = User.query.filter_by(email=email).first()
+        user = db_sess.execute(select(Account).select_from(Account).where(Account.email == email)).first()
         
-        if not user or not user.check_password(password):
+        if not user or not user[0].check_password(password):
             return error_response('Неверный email или пароль', 'invalid_credentials', 401)
         
-        if not user.is_active:
+        if not user[0].is_active:
             return error_response('Аккаунт деактивирован', 'account_inactive', 403)
         
         # Генерация токенов
-        access_token = user.generate_auth_token()
-        refresh_token = user.generate_refresh_token()
-        
+        access_token = user[0].generate_auth_token()
+        refresh_token = user[0].generate_refresh_token()
+        db_sess.close()
         return jsonify({
             'success': True,
             'message': 'Вход выполнен успешно',
             'data': {
-                'user': user.to_dict(),
+                'user': user[0].to_dict(),
                 'tokens': {
                     'access_token': access_token,
                     'refresh_token': refresh_token,
@@ -109,10 +123,13 @@ def login():
         })
         
     except Exception as e:
+        db_sess.close()
         return error_response(f'Ошибка сервера: {str(e)}', 'server_error', 500)
+
 
 @auth_bp.route('/refresh', methods=['POST'])
 def refresh_token():
+    db_sess = create_session()
     try:
         data = request.get_json()
         
@@ -121,7 +138,7 @@ def refresh_token():
         
         import jwt
         from datetime import datetime
-        
+
         try:
             payload = jwt.decode(
                 data['refresh_token'],
@@ -132,16 +149,16 @@ def refresh_token():
             if payload.get('type') != 'refresh':
                 raise jwt.InvalidTokenError
             
-            user = User.query.get(payload['user_id'])
+            user = db_sess.execute(select(Account).select_from(Account).where(payload['user_id'] == Account.id)).first()
             
-            if not user or not user.is_active:
+            if not user or not user[0].is_active:
                 raise jwt.InvalidTokenError
             
-            if user.token_version != payload.get('token_version', 0):
+            if user[0].token_version != payload.get('token_version', 0):
                 raise jwt.InvalidTokenError
             
-            access_token = user.generate_auth_token()
-            
+            access_token = user[0].generate_auth_token()
+            db_sess.close()
             return jsonify({
                 'success': True,
                 'message': 'Токен обновлен',
@@ -152,10 +169,13 @@ def refresh_token():
             })
             
         except:
+            db_sess.close()
             return error_response('Невалидный refresh токен', 'invalid_token', 401)
             
     except Exception as e:
+        db_sess.close()
         return error_response(f'Ошибка сервера: {str(e)}', 'server_error', 500)
+
 
 @auth_bp.route('/logout', methods=['POST'])
 @token_required
@@ -170,6 +190,7 @@ def logout():
         
     except Exception as e:
         return error_response(f'Ошибка сервера: {str(e)}', 'server_error', 500)
+
 
 @auth_bp.route('/me', methods=['GET'])
 @token_required

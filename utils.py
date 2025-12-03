@@ -1,10 +1,11 @@
 import logging
 from functools import wraps
 from flask import request, jsonify, g
-from models import User
+from data.account import Account
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+
 
 def token_required(f):
     """Декоратор для защиты эндпоинтов JWT токеном"""
@@ -22,7 +23,7 @@ def token_required(f):
                 'message': 'Токен отсутствует'
             }), 401
         
-        user = User.verify_auth_token(token)
+        user = Account.verify_auth_token(token)
         if not user:
             return jsonify({
                 'success': False,
@@ -33,6 +34,7 @@ def token_required(f):
         return f(*args, **kwargs)
     
     return decorated
+
 
 def error_response(message, error_code, status_code=400):
     return jsonify({
