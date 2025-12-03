@@ -11,7 +11,7 @@ from start_game import blueprint_start_game
 from auth import auth_bp
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/street_code_database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/street_code_database2.db'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
 app.config['SECRET_KEY'] = 'dev-secret-key-change-in-production'
 db = SQLAlchemy(app)
