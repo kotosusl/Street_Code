@@ -1,7 +1,7 @@
 # Street_Code
 "Код Улиц" - приложение для проведения командных квестов по улицам города
 
-# API: установите все зависимости из requirements.txt и запустите main.py. Сервер запускается на http://127.0.0.1:8080/
+### API: установите все зависимости из requirements.txt и запустите main.py. Сервер запускается на http://127.0.0.1:8080/
 ## POST /api/auth/register
 Регистрация пользователя
 input: {email, password, confirm_password, name}
@@ -48,4 +48,4 @@ output: {status: str}
 ## POST /api/start_game
 Начало игровой сессии
 input: {registration_id}
-output: {status: str, game_session: {id: str, start_datetime: DateTime}}
+output: {status: str, game_session: {id: str, start_datetime: DateTime, score: int, hints: int, status: str, registration_id: str, questions_id_list: [{game_id: str, title: str, dascription: str, organizer: str, avatar: BLOB, location: str, difficulty: str, duration: int, max_members: int, genre: str, is_active: bool, start_datetime: DateTime, end_datetime: DateTime}, ...]}}
