@@ -5,12 +5,12 @@
 ## POST /api/auth/register
 Регистрация пользователя
 input: {email, password, confirm_password, name}
-output: {success: str, message: str, data: {user: {}, tokens: {access_token: str, refresh_token: str, expires_in: int}}}
+output: {success: bool, message: str, data: {user: {email: str, id: str, role: str, username: str}, tokens: {access_token: str, refresh_token: str, expires_in: int}}}
 
 ## POST /api/auth/login
 Вход пользователя
 input: {email, password}
-output: {success: bool, message: str, data: {user: {}, tokens: {access_token: str, refresh_token: str, expires_in: int}}}
+output: {success: bool, message: str, data: {user: {email: str, id: str, role: str, username: str}, tokens: {access_token: str, refresh_token: str, expires_in: int}}}
 
 ## POST /api/auth/refresh
 Рефреш токена
@@ -49,3 +49,7 @@ output: {status: str}
 Начало игровой сессии
 input: {registration_id}
 output: {status: str, game_session: {id: str, start_datetime: DateTime, score: int, hints: int, status: str, registration_id: str, questions_id_list: [{game_id: str, title: str, dascription: str, organizer: str, avatar: BLOB, location: str, difficulty: str, duration: int, max_members: int, genre: str, is_active: bool, start_datetime: DateTime, end_datetime: DateTime}, ...]}}
+
+## Формат ответа ошибок
+output: {sucsess: bool, message: str}
+
