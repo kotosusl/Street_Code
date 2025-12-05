@@ -15,12 +15,14 @@ def get_one_game():
     jsn = request.get_json() or {}
     if not jsn:
         return jsonify({
-            'error': 'Отсутствует тело запроса'
+            'success': False,
+            'message': 'Отсутствует тело запроса'
         }), 400
 
     if not jsn.get('game_id', 0):
         return jsonify({
-            'error': 'Не указан id игры'
+            'success': False,
+            'message': 'Не указан id игры'
         }), 400
 
     db_sess = create_session()
@@ -28,10 +30,12 @@ def get_one_game():
     if not game:
         db_sess.close()
         return jsonify({
-            'error': 'Квест не найден'
+            'success': False,
+            'message': 'Квест не найден'
         }), 404
 
     response = {
+        'success': True,
         'game_id': game[0].id,
         'title': game[0].title,
         'description': game[0].description,

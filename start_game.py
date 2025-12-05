@@ -19,12 +19,14 @@ def start_game():
 
     if not jsn:
         return jsonify({
-            'error': 'Отсутствует тело запроса'
+            'success': False,
+            'message': 'Отсутствует тело запроса'
         }), 400
 
     if not (jsn.get('registration_id', 0)):
         return jsonify({
-            'error': 'Не хватает данных для начала игры'
+            'success': False,
+            'message': 'Не хватает данных для начала игры'
         }), 400
 
     db_sess = create_session()
@@ -33,7 +35,8 @@ def start_game():
     if not registration or registration[0].status != 'active':
         db_sess.close()
         return jsonify({
-            'error': 'Регистрация не существует или неактивна'
+            'success': False,
+            'message': 'Регистрация не существует или неактивна'
         }), 304
 
     questions_list = db_sess.execute(
@@ -52,7 +55,7 @@ def start_game():
     db_sess.commit()
 
     response_questions_list = {
-        'status': 'OK',
+        'success': True,
         'game_session': {
             'id': new_game_session.id,
             'start_datetime': new_game_session.start_datetime,

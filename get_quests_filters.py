@@ -50,10 +50,12 @@ def get_quests_filters():
     if not search_quests:
         db_sess.close()
         return jsonify({
+            'success': True,
             'searching_quests': []
         }), 404
 
     response = {
+        'success': True,
         'searching_quests': [
             {
                 'game_id': p[0].id,

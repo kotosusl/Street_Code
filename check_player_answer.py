@@ -18,13 +18,15 @@ def check_answer():
     jsn = request.get_json() or {}
     if not jsn:
         return jsonify({
-            'error': 'Отсутствует тело запроса'
+            'success': False,
+            'message': 'Отсутствует тело запроса'
         }), 400
 
     if (not (jsn.get('answer', 0) and jsn.get('game_session_id', 0) and jsn.get('question_id', 0)) or
             jsn.get('end_question_bool', -1) == -1 or jsn.get('hint', -1) == -1):
         return jsonify({
-            'error': 'Не хватает данных для проверки ответа'
+            'success': False,
+            'message': 'Не хватает данных для проверки ответа'
         }), 400
 
     db_sess = create_session()
@@ -32,7 +34,8 @@ def check_answer():
     if not question:
         db_sess.close()
         return jsonify({
-            'error': 'Вопрос не найден'
+            'success': False,
+            'message': 'Вопрос не найден'
         }), 404
 
     game_session = db_sess.execute(
@@ -40,7 +43,8 @@ def check_answer():
     if not game_session:
         db_sess.close()
         return jsonify({
-            'error': 'Игровая сессия не найдена'
+            'success': False,
+            'message': 'Игровая сессия не найдена'
         }), 404
 
     game = db_sess.execute(
@@ -55,7 +59,7 @@ def check_answer():
             game_session[0].status = 'finished'
             db_sess.commit()
         response = {
-            'status': "OK",
+            'success': True,
             'game_status': "finished",
             'start_datetime': game_session[0].start_datetime,
             'end_datetime': game_session[0].end_datetime,
@@ -93,7 +97,7 @@ def check_answer():
     db_sess.commit()
 
     response = {
-        'status': "OK",
+        'success': True,
         'game_status': 'active',
         'start_datetime': game_session[0].start_datetime,
         'correct': new_player_answer.correct_answer,
