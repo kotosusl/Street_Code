@@ -9,7 +9,7 @@ output: {success: bool, message: str, data: {user: {email: str, id: str, role: s
 
 ## POST /api/auth/login
 Вход пользователя
-input: {email, password}
+\n input: {email, password}
 output: {success: bool, message: str, data: {user: {email: str, id: str, role: str, username: str}, tokens: {access_token: str, refresh_token: str, expires_in: int}}}
 
 ## POST /api/auth/refresh
