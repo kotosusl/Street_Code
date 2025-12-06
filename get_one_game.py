@@ -41,7 +41,7 @@ def get_one_game():
         'description': game[0].description,
         'organizer': db_sess.execute(
                 select(Account).select_from(Account).where(game[0].organizer_id == Account.id)).first()[0].username,
-        'avatar': game[0].avatar,
+        'avatar': game[0].avatar_url,
         'location': db_sess.execute(
                 select(Locations).select_from(Locations).where(game[0].location == Locations.id)).first()[0].name,
         'difficulty': game[0].difficulty,
