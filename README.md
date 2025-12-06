@@ -43,7 +43,7 @@ input: {answer, game_session_id, question_id}
 
 input: {game_id}
 
-output: {game_id: str, title: str, dascription: str, organizer: str, avatar: BLOB, location: str, difficulty: str, duration: int, max_members: int, genre: str, is_active: bool, start_datetime: DateTime, end_datetime: DateTime}
+output: {game_id: str, title: str, dascription: str, organizer: str, avatar_url: str, location: str, difficulty: str, duration: int, max_members: int, genre: str, is_active: bool, start_datetime: DateTime, end_datetime: DateTime}
 
 ## GET /api/get_quests
 Получение списка квестов по фильтру
