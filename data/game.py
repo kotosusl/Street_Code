@@ -10,7 +10,7 @@ class Game(SqlAlchemyBase):
     title = sa.Column(sa.String(100), nullable=False)
     description = sa.Column(sa.String(500))
     organizer_id = sa.Column(sa.String(36), sa.ForeignKey('account.id'))
-    avatar = sa.Column(sa.BLOB)
+    avatar_url = sa.Column(sa.String(300))
     location = sa.Column(sa.String(36), sa.ForeignKey('locations.id'))
     difficulty = sa.Column(sa.String(30), default="Не указано")
     duration = sa.Column(sa.Integer)
